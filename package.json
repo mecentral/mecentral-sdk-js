@@ -1,0 +1,39 @@
+{
+  "name": "@mecentral/sdk",
+  "version": "0.1.0",
+  "description": "Official MeCentral API client for Node.js and the browser: vault deposits, custody grants, People Graph, webhooks.",
+  "license": "MIT",
+  "homepage": "https://mecentral.org/developers/sdks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mecentral/mecentral-sdk-js.git"
+  },
+  "bugs": "https://github.com/mecentral/mecentral-sdk-js/issues",
+  "keywords": ["mecentral", "vault", "custody", "documents", "sdk", "api-client"],
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "typecheck": "tsc -p tsconfig.esm.json --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^18.19.0",
+    "typescript": "^5.4.0"
+  }
+}

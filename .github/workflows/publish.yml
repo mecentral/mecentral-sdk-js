@@ -1,0 +1,30 @@
+# Publish to npm when a version tag is pushed (v0.1.1, v1.0.0-rc.1 …).
+# Copied into the split repo by tools/sdk.py. Needs ONE repository secret:
+#   NPM_TOKEN — an npm "Automation" token for the mecentral org
+# (or configure npm Trusted Publishing for this repo and drop the token).
+name: publish
+on:
+  push:
+    tags: ['v*']
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # provenance attestation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Tag must match package.json
+        run: |
+          v=$(node -p "require('./package.json').version")
+          [ "v$v" = "${GITHUB_REF_NAME}" ] || { echo "tag ${GITHUB_REF_NAME} != package.json $v"; exit 1; }
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
