@@ -95,9 +95,12 @@ export class MeCentral {
   }
 
   /**
-   * Self-service SANDBOX provisioning for proof-of-concept builds.
-   * Authenticates with the operator token, not an API key, so it is static.
-   * The raw key is in the response and nowhere else.
+   * Self-service provisioning for build sessions: SANDBOX by default, or
+   * PRODUCTION (mec_prd_) with `mode: 'production'` plus an `operator_reason`
+   * when the door's operator has switched production on. Authenticates with
+   * the operator token, not an API key, so it is static. The door answers
+   * only to allowlisted source addresses. The raw key is in the response and
+   * nowhere else.
    */
   static async provisionSandbox(params: ProvisionSandboxParams): Promise<ProvisionSandboxResponse> {
     const { token, baseUrl, fetch: customFetch, ...body } = params;

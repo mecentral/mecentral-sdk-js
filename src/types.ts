@@ -392,7 +392,11 @@ export interface ProvisionSandboxParams {
   name?: string;
   purpose?: string;
   scopes?: string[];
-  /** 1..180 */
+  /** 'sandbox' (default, mec_sbx_) or 'production' (mec_prd_; needs the door's production switch AND operator_reason). */
+  mode?: 'sandbox' | 'production';
+  /** Required with mode 'production', or when scopes names a self-grantable operator scope. ≤200 chars, recorded. */
+  operator_reason?: string;
+  /** sandbox 1..180 (default 90); production 1..366 (default 365) */
   ttl_days?: number;
   rotate?: boolean;
   baseUrl?: string;
@@ -402,7 +406,7 @@ export interface ProvisionSandboxParams {
 export interface ProvisionSandboxResponse extends Json {
   success: true;
   created: boolean;
-  integration: Json & { id: number; slug: string; mode: 'sandbox'; scopes: string[] };
-  key: Json & { id: number; key: string; prefix: string; suffix: string; expires_at: string };
+  integration: Json & { id: number; slug: string; mode: 'sandbox' | 'production'; scopes: string[] };
+  key: Json & { id: number; key: string; prefix: string; suffix: string; mode: 'sandbox' | 'production'; expires_at: string };
   rotated_out: number[];
 }
